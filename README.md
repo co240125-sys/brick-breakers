@@ -87,3 +87,43 @@ class GameBoard extends JPanel implements ActionListener, KeyListener {
         public int getDy() { return dy; }
         public void setDy(int dy) { this.dy = dy; }
     }
+    class Brick extends GameObject {
+        private boolean destroyed = false;
+        private Color color;
+
+        Brick(int x, int y) {
+            super(x, y, 60, 20);
+            color = new Color(
+                    (int)(Math.random() * 255),
+                    (int)(Math.random() * 255),
+                    (int)(Math.random() * 255)
+            );
+        }
+
+
+        void draw(Graphics g) {
+            if (!destroyed) {
+                g.setColor(color);
+                g.fillRect(getX(), getY(), getWidth(), getHeight());
+            }
+        }
+
+        public boolean isDestroyed() { return destroyed; }
+        public void setDestroyed(boolean destroyed) { this.destroyed = destroyed; }
+        public Color getColor() { return color; }
+    }
+
+
+    private Paddle paddle;
+    private Ball ball;
+    private List<Brick> bricks;
+    private List<GameObject> drawables;
+    private Timer timer;
+    private boolean running = true;
+    private String message = "";
+    private Font customFont;
+
+    GameBoard() {
+        setBackground(Color.BLACK);
+        setFocusable(true);
+        addKeyListener(this);
