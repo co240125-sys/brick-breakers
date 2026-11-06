@@ -87,6 +87,7 @@ class GameBoard extends JPanel implements ActionListener, KeyListener {
         public int getDy() { return dy; }
         public void setDy(int dy) { this.dy = dy; }
     }
+    
     class Brick extends GameObject {
         private boolean destroyed = false;
         private Color color;
