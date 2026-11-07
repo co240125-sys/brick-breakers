@@ -129,8 +129,68 @@ class GameBoard extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
         addKeyListener(this);
 
+               try {
+           customFont = new Font("Poppins", Font.BOLD, 30);
+       } catch (Exception e) {
+           customFont = new Font("SansSerif", Font.BOLD, 30);
+           System.err.println("Error initializing custom font: " + e.getMessage());
+       }
 
 
+       initGameObjects();
+
+
+       timer = new Timer(16, this);
+       timer.start();
+   }
+
+
+   private void initGameObjects() {
+       paddle = new Paddle(260, 450);
+       ball = new Ball(295, 300);
+       createBricks();
+
+
+
+
+       drawables = new ArrayList<>();
+       drawables.add(paddle);
+       drawables.add(ball);
+       drawables.addAll(bricks);
+   }
+
+
+   void createBricks() {
+       bricks = new ArrayList<>();
+       int rows = 5, cols = 8;
+
+
+       for (int r = 0; r < rows; r++) {
+           for (int c = 0; c < cols; c++) {
+               bricks.add(new Brick(20 + c * 70, 30 + r * 30));
+           }
+       }
+   }
+
+
+   void restartGame() {
+       initGameObjects();
+       message = "";
+       running = true;
+       timer.start();
+       repaint();
+   }
+
+
+
+
+   public void actionPerformed(ActionEvent e) {
+       if (!running) return;
+       ball.update();
+       checkCollisions();
+       repaint();
+   }
+   
 void checkCollisions() {
         if (ball.getX() <= 0 || ball.getX() + ball.getWidth() >= getWidth())
             ball.setDx(ball.getDx() * -1);
