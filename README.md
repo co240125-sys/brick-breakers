@@ -128,3 +128,121 @@ class GameBoard extends JPanel implements ActionListener, KeyListener {
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
+
+///last part////
+void checkCollisions() {
+        if (ball.getX() <= 0 || ball.getX() + ball.getWidth() >= getWidth())
+            ball.setDx(ball.getDx() * -1);
+
+
+        if (ball.getY() <= 0)
+            ball.setDy(ball.getDy() * -1);
+
+
+        if (ball.getY() + ball.getHeight() >= getHeight()) {
+            running = false;
+            timer.stop();
+            message = "Game Over!";
+        }
+
+
+        if (ball.getBounds().intersects(paddle.getBounds())) {
+            ball.setDy(ball.getDy() * -1);
+            ball.setY(paddle.getY() - ball.getHeight()); // Fixed Subtraction
+        }
+
+
+        boolean allDestroyed = true;
+
+
+        for (Brick b : bricks) {
+            if (!b.isDestroyed()) {
+                allDestroyed = false;
+
+
+                if (ball.getBounds().intersects(b.getBounds())) {
+                    b.setDestroyed(true);
+                    ball.setDy(ball.getDy() * -1);
+                }
+            }
+        }
+
+
+        if (allDestroyed) {
+            running = false;
+            timer.stop();
+            message = "You Win!";
+        }
+    }
+
+
+
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+
+        // 4. Polymorphism in Execution
+        for (GameObject obj : drawables) {
+            obj.draw(g);
+        }
+
+
+        if (!running) {
+            g.setColor(Color.WHITE);
+            g.setFont(customFont);
+            g.drawString(message, getWidth() / 2 - 70, getHeight() / 2);
+
+
+            g.setFont(new Font("SansSerif", Font.PLAIN, 18));
+            g.drawString("Press SPACE to play again",
+                    getWidth() / 2 - 110, getHeight() / 2 + 40); // Fixed Subtraction
+        }
+    }
+
+
+
+
+    public void keyPressed(KeyEvent e) {
+        if (running) {
+            if (e.getKeyCode() == KeyEvent.VK_LEFT)
+                paddle.moveLeft();
+
+
+            if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+                paddle.moveRight(getWidth());
+        }
+
+
+        if (!running && e.getKeyCode() == KeyEvent.VK_SPACE) {
+            restartGame();
+        }
+    }
+
+
+    public void keyReleased(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {}
+}
+
+
+
+
+public class BrickBreaker extends JFrame {
+
+
+    public BrickBreaker() {
+        setTitle("Brick Breaker");
+        setSize(600, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+
+        add(new GameBoard());
+        setVisible(true);
+    }
+
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new BrickBreaker());
+    }
+}
