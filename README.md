@@ -130,6 +130,7 @@ class GameBoard extends JPanel implements ActionListener, KeyListener {
         addKeyListener(this);
 
 ///last part////
+
 void checkCollisions() {
         if (ball.getX() <= 0 || ball.getX() + ball.getWidth() >= getWidth())
             ball.setDx(ball.getDx() * -1);
